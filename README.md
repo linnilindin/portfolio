@@ -29,4 +29,4 @@ npm run dev
 - Scroll-triggered animations
 - Responsive design
 - Image optimization with Next.js Image
-- Performance-optimized animations using CSS transforms
+- Performance-optimised animations using CSS transforms
