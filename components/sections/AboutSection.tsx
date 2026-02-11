@@ -20,7 +20,6 @@ import {
   useSortable,
   rectSortingStrategy,
 } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 import { aboutData, TechStackItem } from '@/data/about'
 import { Folder } from '@/components/ui/folder'
 
@@ -28,62 +27,62 @@ const CATEGORIES = ['Frontend', 'Backend', 'Database', 'Tools'] as const
 
 interface SortableTechItemProps {
   tech: TechStackItem
-  index: number
+  id: string
 }
 
-function SortableTechItem({ tech, index }: SortableTechItemProps) {
+function SortableTechItem({ tech, id }: SortableTechItemProps) {
   const {
     attributes,
     listeners,
     setNodeRef,
-    transform,
-    transition,
     isDragging,
-  } = useSortable({ id: `${tech.category}-${tech.name}-${index}` })
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  }
+  } = useSortable({ id })
 
   return (
-    <motion.span
+    <span
       ref={setNodeRef}
-      style={style}
-      initial={{ opacity: 0, scale: 0.8 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.3 }}
-      className="px-4 py-2 bg-white rounded-lg text-gray-900 font-medium shadow-md hover:shadow-lg transition-shadow cursor-grab active:cursor-grabbing"
+      style={{ opacity: isDragging ? 0 : 1 }}
+      className="inline-block"
       {...attributes}
       {...listeners}
     >
-      {tech.name}
-    </motion.span>
+      <span className="px-4 py-2 bg-white rounded-lg text-gray-900 font-medium shadow-md hover:shadow-lg cursor-grab active:cursor-grabbing inline-block">
+        {tech.name}
+      </span>
+    </span>
   )
 }
 
 interface CategoryTechListProps {
   category: string
   techs: TechStackItem[]
-  categoryId: string
 }
 
-function CategoryTechList({ category, techs, categoryId }: CategoryTechListProps) {
-  const itemIds = techs.map((tech, index) => `${category}-${tech.name}-${index}`)
+function CategoryTechList({ category, techs }: CategoryTechListProps) {
+  const itemIds = techs.map((tech) => `${category}-${tech.name}`)
 
   return (
     <Folder name={category}>
       <SortableContext items={itemIds} strategy={rectSortingStrategy}>
         <div className="flex flex-wrap gap-3">
-          {techs.map((tech, index) => (
-            <SortableTechItem key={`${tech.name}-${index}`} tech={tech} index={index} />
+          {techs.map((tech) => (
+            <SortableTechItem
+              key={`${category}-${tech.name}`}
+              tech={tech}
+              id={`${category}-${tech.name}`}
+            />
           ))}
         </div>
       </SortableContext>
     </Folder>
   )
+}
+
+// Helper function to parse ID into category and tech name
+function parseId(id: string): { category: string; techName: string } | null {
+  const match = id.match(/^(.+?)-(.+)$/)
+  if (!match) return null
+  return { category: match[1], techName: match[2] }
 }
 
 const AboutSection = forwardRef<HTMLDivElement>((_, ref) => {
@@ -92,13 +91,14 @@ const AboutSection = forwardRef<HTMLDivElement>((_, ref) => {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: { distance: 8 },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
   )
 
-  // Group tech stack by category with their order
   const techStackByCategory = useMemo(() => {
     const grouped: Record<string, TechStackItem[]> = {}
     CATEGORIES.forEach((category) => {
@@ -115,47 +115,28 @@ const AboutSection = forwardRef<HTMLDivElement>((_, ref) => {
     const { active, over } = event
     setActiveId(null)
 
-    if (!over) {
-      // if dropped outside of droppable area, send it bcak
-      return
-    }
+    if (!over) return
 
-    const activeId = active.id as string
-    const overId = over.id as string
+    const activeParsed = parseId(active.id as string)
+    const overParsed = parseId(over.id as string)
 
-    // Extract category and tech name from IDs
-    const activeMatch = activeId.match(/^(.+?)-(.+?)-(\d+)$/)
-    const overMatch = overId.match(/^(.+?)-(.+?)-(\d+)$/)
+    if (!activeParsed || !overParsed) return
+    if (activeParsed.category !== overParsed.category) return
 
-    if (!activeMatch || !overMatch) return
+    const categoryItems = techStackByCategory[activeParsed.category]
+    const activeIndex = categoryItems.findIndex((tech) => tech.name === activeParsed.techName)
+    const overIndex = categoryItems.findIndex((tech) => tech.name === overParsed.techName)
 
-    const activeCategory = activeMatch[1]
-    const overCategory = overMatch[1]
+    if (activeIndex === -1 || overIndex === -1 || activeIndex === overIndex) return
 
-    // Only allow reordering within the same category
-    if (activeCategory !== overCategory) {
-      return
-    }
-
-    const activeIndex = parseInt(activeMatch[3], 10)
-    const overIndex = parseInt(overMatch[3], 10)
-
-    if (activeIndex === overIndex) {
-      return
-    }
-
-    // Get the current items for this category
-    const categoryItems = techStackByCategory[activeCategory]
     const newCategoryItems = arrayMove(categoryItems, activeIndex, overIndex)
 
-    // Rebuild the entire tech stack with the reordered category
+    // Rebuild tech stack with reordered category
     const newTechStack: TechStackItem[] = []
     CATEGORIES.forEach((category) => {
-      if (category === activeCategory) {
-        newTechStack.push(...newCategoryItems)
-      } else {
-        newTechStack.push(...techStackByCategory[category])
-      }
+      newTechStack.push(
+        ...(category === activeParsed.category ? newCategoryItems : techStackByCategory[category])
+      )
     })
 
     setTechStack(newTechStack)
@@ -163,11 +144,9 @@ const AboutSection = forwardRef<HTMLDivElement>((_, ref) => {
 
   const activeTech = useMemo(() => {
     if (!activeId) return null
-    const match = activeId.match(/^(.+?)-(.+?)-(\d+)$/)
-    if (!match) return null
-    const category = match[1]
-    const techName = match[2]
-    return techStackByCategory[category]?.find((tech) => tech.name === techName) || null
+    const parsed = parseId(activeId)
+    if (!parsed) return null
+    return techStackByCategory[parsed.category]?.find((tech) => tech.name === parsed.techName) || null
   }, [activeId, techStackByCategory])
 
   return (
@@ -189,12 +168,11 @@ const AboutSection = forwardRef<HTMLDivElement>((_, ref) => {
             viewport={{ once: true, margin: '-100px' }}
             transition={{ duration: 0.6 }}
             className="space-y-8 relative flex flex-col justify-center"
-            style={{ zIndex: 30, position: 'relative' }}
           >
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 relative" style={{ zIndex: 30 }}>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
               About Me
             </h2>
-            <div className="space-y-6 text-lg text-gray-800 relative" style={{ zIndex: 30 }}>
+            <div className="space-y-6 text-lg text-gray-800">
               <p className="leading-relaxed">
                 {bio.paragraph1}
               </p>
@@ -214,22 +192,20 @@ const AboutSection = forwardRef<HTMLDivElement>((_, ref) => {
             </div>
           </motion.div>
 
-          <div className="space-y-8 relative" style={{ zIndex: 30, position: 'relative' }}>
+          <div className="space-y-8 relative">
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-100px' }}
               transition={{ duration: 0.6 }}
-              className="space-y-8 relative"
-              style={{ zIndex: 30, position: 'relative' }}
+              className="space-y-8"
             >
-              <div className="space-y-2" style={{ zIndex: 30, position: 'relative' }}>
+              <div className="space-y-2">
                 {CATEGORIES.map((category) => (
                   <CategoryTechList
                     key={category}
                     category={category}
                     techs={techStackByCategory[category]}
-                    categoryId={category}
                   />
                 ))}
               </div>
@@ -238,9 +214,16 @@ const AboutSection = forwardRef<HTMLDivElement>((_, ref) => {
         </div>
         <DragOverlay>
           {activeTech ? (
-            <span className="px-4 py-2 bg-white rounded-lg text-gray-900 font-medium shadow-lg opacity-90">
+            <motion.span
+              initial={{ scale: 1, rotate: 0 }}
+              animate={{ scale: 1.1, rotate: 2 }}
+              className="px-4 py-2 bg-white rounded-lg text-gray-900 font-medium shadow-2xl cursor-grabbing"
+              style={{
+                boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+              }}
+            >
               {activeTech.name}
-            </span>
+            </motion.span>
           ) : null}
         </DragOverlay>
       </DndContext>

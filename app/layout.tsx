@@ -4,6 +4,9 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'Lynns Portfolio',
   description: 'Portfolio built with React, Next.js, TypeScript, and Tailwind CSS',
+  icons: {
+    icon: '/icon.jpg',
+  },
 }
 
 export default function RootLayout({
