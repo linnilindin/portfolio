@@ -39,7 +39,7 @@ export const aboutData: AboutData = {
   ],
   bio: {
     paragraph1: "I'm a passionate developer specialising in React and modern web technologies. I love creating interactive, performant, and user-friendly experiences. When I'm not coding, I'm usually reading or drawing (like that cat you just saw!)",
-    paragraph2: "With experience in fullstack development, I bring a comprehensive understanding of both frontend and backend systems, allowing me to build cohesive and scalable applications.",
+    paragraph2: "With experience in fullstack development and IT support, I bring a practical understanding of both building software and keeping systems running. From frontend and backend work through to troubleshooting and supporting users day to day.",
   },
   resumeUrl: '/Lynn_Xie_Resume.pdf',
 }

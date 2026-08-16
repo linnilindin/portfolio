@@ -28,7 +28,7 @@ export default function LandingSection({ videoEnded, onVideoEnd, onScrollToProje
               textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
             }}
           >
-            Hi, I'm Lynn!
+            Hi, I'm Lin!
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -39,7 +39,7 @@ export default function LandingSection({ videoEnded, onVideoEnd, onScrollToProje
               textShadow: '2px 2px 8px rgba(163, 62, 62, 0.5)',
             }}
           >
-            Fullstack developer building bridges between users and technology
+            IT Engineer building bridges between users and technology
           </motion.p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}

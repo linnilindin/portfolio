@@ -17,6 +17,22 @@ export interface Education {
 
 export const workExperiences: WorkExperience[] = [
   {
+    id: 'technicalities',
+    company: 'Technicalities, Heatherton',
+    position: 'IT Systems Engineer',
+    duration: 'Mar 2026 - Present',
+    description: 'Support business and residential clients through ConnectWise, resolving tickets by phone and remote access, plus onsite office setups and migrations. Manage Microsoft 365 and Entra ID across client tenants, deploy devices with Autopilot and Intune, monitor endpoints via N-able, and use PowerShell for tenant audits and diagnostics.',
+    techStack: ['Microsoft 365', 'Entra ID', 'Intune', 'PowerShell', 'ConnectWise', 'N-able'],
+  },
+  {
+    id: 'Unimelb',
+    company: 'University of Melbourne',
+    position: 'Student IT Support',
+    duration: 'Jun 2022 - Feb 2026',
+    description: 'Helped students and staff troubleshoot tech issues across the universitys systems. Broke down technical problems in ways that make sense to non-technical users and used ServiceNow to track and document issues, knowing when to solve things directly and when to escalate to specialized teams.',
+    techStack: ['ServiceNow', 'Microsoft 365', 'OktaSSO'],
+  },
+  {
     id: 'dineseal',
     company: 'DineSeal',
     position: 'Fullstack Developer Intern',
@@ -31,14 +47,6 @@ export const workExperiences: WorkExperience[] = [
     duration: 'Mar 2023 - Nov 2023',
     description: 'Redesigned the media carousel interface that students and staff use to access learning modules, making it much easier to navigate. Handled a full website migration to a new domain without any downtime. Also customised Salesforce features using Apex to improve how course administrators manage the system.',
     techStack: ['HTML', 'CSS', 'JavaScript', 'Salesforce', 'Apex'],
-  },
-  {
-    id: 'Unimelb',
-    company: 'University of Melbourne',
-    position: 'Student IT Support',
-    duration: 'Jun 2022 - Present',
-    description: 'Helped students and staff troubleshoot tech issues across the universitys systems. Broke down technical problems in ways that make sense to non-technical users and used ServiceNow to track and document issues, knowing when to solve things directly and when to escalate to specialized teams.',
-    techStack: ['ServiceNow', 'Microsoft 365', 'OktaSSO'],
   },
 ]
 
@@ -57,4 +65,3 @@ export const education: Education[] = [
     duration: 'Mar 2021 - Dec 2023',
   },
 ]
-
