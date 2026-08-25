@@ -66,16 +66,35 @@ export default function Contact() {
       className="relative min-h-screen w-full flex items-center justify-center px-4 md:px-8 lg:px-16 py-16"
       style={{ backgroundColor: COLORS.BACKGROUND }}
     >
-      <div className="max-w-2xl w-full">
+      <div className="max-w-6xl w-full">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-100px' }}
           transition={TRANSITION_CONFIG.SMOOTH}
-          className="text-center mb-12"
+          className="relative mb-12 pt-32 md:pt-0 text-center"
         >
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="relative inline-block text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900">
             Contact me!
+            <span className="absolute left-1/2 bottom-full mb-3 -translate-x-1/2 w-max max-w-[calc(100vw-2rem)] text-left md:left-full md:bottom-auto md:top-1/2 md:mb-0 md:ml-3 md:translate-x-0 md:-translate-y-1/2">
+              <span
+                className="absolute left-1/2 top-full -translate-x-1/2 w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-black md:hidden"
+                aria-hidden="true"
+              />
+              <span
+                className="hidden md:block absolute left-0 top-1/2 -translate-x-2 -translate-y-1/2 w-0 h-0 border-t-[10px] border-b-[10px] border-r-[12px] border-t-transparent border-b-transparent border-r-black"
+                aria-hidden="true"
+              />
+              <span className="block bg-black text-white rounded-3xl px-5 py-4 text-sm md:text-base leading-snug font-medium -rotate-1 shadow-xl">
+                or you can email me directly at
+                <a
+                  href="mailto:linx.xie@outlook.com"
+                  className="mt-1 block whitespace-nowrap underline decoration-white/40 underline-offset-2 hover:decoration-white"
+                >
+                  linx.xie@outlook.com
+                </a>
+              </span>
+            </span>
           </h2>
         </motion.div>
 
@@ -85,7 +104,7 @@ export default function Contact() {
           viewport={{ once: true, margin: '-100px' }}
           transition={{ ...TRANSITION_CONFIG.SMOOTH, delay: 0.2 }}
           onSubmit={handleSubmit}
-          className="space-y-6 bg-white/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-xl"
+          className="max-w-2xl mx-auto space-y-6 bg-white/50 backdrop-blur-sm rounded-2xl p-6 md:p-8 shadow-xl"
         >
           <div>
             <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-2">
@@ -167,7 +186,7 @@ export default function Contact() {
               animate={{ opacity: 1, y: 0 }}
               className="p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg"
             >
-              Something went wrong. Please try again or email me directly at lynnx.xie@outlook.com
+              Something went wrong. Please try again or email me directly at linx.xie@outlook.com
             </motion.div>
           )}
 
