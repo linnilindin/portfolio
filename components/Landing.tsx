@@ -9,6 +9,7 @@ import AboutSection from '@/components/sections/AboutSection'
 import WorkExperienceSection from '@/components/sections/WorkExperienceSection'
 import { useRadialAnimation } from '@/hooks/useRadialAnimation'
 import { COLORS, TRANSITION_CONFIG } from '@/constants/animations'
+import { SHOW_WORK_EXPERIENCE } from '@/constants/features'
 
 export default function Landing() {
   const [videoEnded, setVideoEnded] = useState(false)
@@ -77,7 +78,9 @@ export default function Landing() {
 
       <AboutSection ref={aboutMeRef} />
 
-      <WorkExperienceSection ref={workExperienceRef} educationRef={educationContainerRef} />
+      {SHOW_WORK_EXPERIENCE && (
+        <WorkExperienceSection ref={workExperienceRef} educationRef={educationContainerRef} />
+      )}
     </div>
   )
 }

@@ -3,16 +3,21 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState, useEffect } from 'react'
 import { ANIMATION_DELAYS, ANIMATION_DURATIONS, TRANSITION_CONFIG } from '@/constants/animations'
+import { SHOW_WORK_EXPERIENCE } from '@/constants/features'
 
-const SECTIONS = ['landing', 'about', 'work-experience', 'projects', 'contact'] as const
-
-const NAV_ITEMS = [
+const ALL_NAV_ITEMS = [
   { id: 'landing', label: 'Home' },
   { id: 'about', label: 'About' },
   { id: 'work-experience', label: 'Experience' },
   { id: 'projects', label: 'Projects' },
   { id: 'contact', label: 'Contact' },
 ] as const
+
+const NAV_ITEMS = ALL_NAV_ITEMS.filter(
+  (item) => item.id !== 'work-experience' || SHOW_WORK_EXPERIENCE
+)
+
+const SECTIONS = NAV_ITEMS.map((item) => item.id)
 
 export default function Header() {
   const [activeSection, setActiveSection] = useState<string>('landing')

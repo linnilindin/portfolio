@@ -34,11 +34,11 @@ export function useRadialAnimation({
   })
 
   useEffect(() => {
-    // Exit early if DOM elements aren't ready yet or running on server
+    // Exit early if DOM elements aren't ready yet or running on server.
+    // The work experience refs stay empty when that section is hidden, so the
+    // animation settles at the About Me position instead.
     if (
       !aboutMeRef.current || 
-      !workExperienceRef.current || 
-      !educationContainerRef.current || 
       !radialContainerRef.current || 
       typeof window === 'undefined'
     ) return
@@ -50,12 +50,7 @@ export function useRadialAnimation({
      * 3. Work Experience transition (moves to section corner, scales up + rotates)
      */
     const updateRadialPosition = () => {
-      if (
-        !aboutMeRef.current || 
-        !workExperienceRef.current || 
-        !educationContainerRef.current || 
-        !radialContainerRef.current
-      ) return
+      if (!aboutMeRef.current || !radialContainerRef.current) return
 
       const windowWidth = window.innerWidth
       const windowHeight = window.innerHeight

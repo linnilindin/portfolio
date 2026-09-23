@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { projects } from '@/data/projects'
 import { COLORS } from '@/constants/animations'
 import ImageGrid from '@/components/ImageGrid'
+import ProjectsOverview from '@/components/sections/ProjectsOverview'
 
 export default function Projects() {
   return (
@@ -13,6 +14,7 @@ export default function Projects() {
       id="projects"
       className="relative w-full"
     >
+      <ProjectsOverview />
       {projects.map((project) => (
         <ProjectCard
           key={project.id}
@@ -56,8 +58,9 @@ function ProjectCard({ project }: ProjectCardProps) {
   // Get project-specific background color based on project.theme or project.id
   const getBackgroundColor = () => {
     const themeColors: Record<string, string> = {
-      skyview: '#E3F2FD',      
-      portfolio: '#FFE0B2',   
+      skyview: '#E3F2FD',
+      logkeep: '#E8F5E9',
+      portfolio: '#FFE0B2',
     }
     return themeColors[project.theme] || themeColors[project.id] || COLORS.BACKGROUND
   }
@@ -65,6 +68,7 @@ function ProjectCard({ project }: ProjectCardProps) {
   return (
     <div
       ref={cardRef}
+      id={`project-${project.id}`}
       className="min-h-screen w-full flex flex-col md:flex-row items-center justify-center px-4 md:px-8 lg:px-16 py-16"
       style={{ backgroundColor: getBackgroundColor() }}
     >
@@ -254,7 +258,7 @@ function ProjectCard({ project }: ProjectCardProps) {
           }}
           className="absolute left-0 md:left-8 w-24 h-24 md:w-32 md:h-32"
         >
-          <Image
+          <img
             src={project.icon}
             alt={`${project.title} icon`}
             width={128}
@@ -266,6 +270,17 @@ function ProjectCard({ project }: ProjectCardProps) {
         {project.id === 'portfolio' ? (
           <div className="ml-0 md:ml-32">
             <ImageGrid images={project.screenshots} variant="mobile" />
+          </div>
+        ) : project.id === 'logkeep' ? (
+          <div className="ml-0 md:ml-32 space-y-8 md:space-y-12">
+            <ImageGrid
+              images={project.screenshots.slice(0, 2)}
+              variant="mobile"
+            />
+            <ImageGrid
+              images={project.screenshots.slice(2, 4)}
+              variant="rectangle"
+            />
           </div>
         ) : project.id === 'skyview' ? (
           <div className="ml-0 md:ml-32 -mt-16 md:-mt-24">

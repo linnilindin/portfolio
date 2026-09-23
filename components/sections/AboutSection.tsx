@@ -6,7 +6,8 @@ import {
   DndContext,
   closestCenter,
   KeyboardSensor,
-  PointerSensor,
+  MouseSensor,
+  TouchSensor,
   useSensor,
   useSensors,
   DragEndEvent,
@@ -41,8 +42,8 @@ function SortableTechItem({ tech, id }: SortableTechItemProps) {
   return (
     <span
       ref={setNodeRef}
-      style={{ opacity: isDragging ? 0 : 1 }}
-      className="inline-block"
+      style={{ opacity: isDragging ? 0 : 1, touchAction: 'none' }}
+      className="inline-block touch-none"
       {...attributes}
       {...listeners}
     >
@@ -91,8 +92,11 @@ const AboutSection = forwardRef<HTMLDivElement>((_, ref) => {
   const [activeId, setActiveId] = useState<string | null>(null)
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
+    useSensor(MouseSensor, {
       activationConstraint: { distance: 8 },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 200, tolerance: 8 },
     }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
@@ -159,6 +163,7 @@ const AboutSection = forwardRef<HTMLDivElement>((_, ref) => {
         collisionDetection={closestCenter}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
+        onDragCancel={() => setActiveId(null)}
       >
         <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 relative">
           <motion.div
@@ -200,14 +205,25 @@ const AboutSection = forwardRef<HTMLDivElement>((_, ref) => {
               transition={{ duration: 0.6 }}
               className="space-y-8"
             >
-              <div className="space-y-2">
-                {CATEGORIES.map((category) => (
-                  <CategoryTechList
-                    key={category}
-                    category={category}
-                    techs={techStackByCategory[category]}
+              <div>
+                <div className="relative mb-6 w-fit rotate-1">
+                  <p className="bg-black text-white rounded-3xl px-5 py-3 text-sm md:text-base font-medium shadow-xl">
+                    Try moving the skills around!
+                  </p>
+                  <div
+                    className="absolute left-8 top-[calc(100%-2px)] w-0 h-0 border-l-[10px] border-r-[10px] border-t-[12px] border-l-transparent border-r-transparent border-t-black"
+                    aria-hidden="true"
                   />
-                ))}
+                </div>
+                <div className="space-y-2">
+                  {CATEGORIES.map((category) => (
+                    <CategoryTechList
+                      key={category}
+                      category={category}
+                      techs={techStackByCategory[category]}
+                    />
+                  ))}
+                </div>
               </div>
             </motion.div>
           </div>

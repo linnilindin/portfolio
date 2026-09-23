@@ -21,7 +21,7 @@ export const workExperiences: WorkExperience[] = [
     company: 'Technicalities, Heatherton',
     position: 'IT Systems Engineer',
     duration: 'Mar 2026 - Present',
-    description: 'Support business and residential clients through ConnectWise, resolving tickets by phone and remote access, plus onsite office setups and migrations. Manage Microsoft 365 and Entra ID across client tenants, deploy devices with Autopilot and Intune, monitor endpoints via N-able, and use PowerShell for tenant audits and diagnostics.',
+    description: 'Support businesses and residential clients through ConnectWise, resolving tickets by phone and remote access, plus onsite office setups and migrations. Manage Microsoft 365 and Entra ID across client tenants, deploy devices with Autopilot and Intune, monitor endpoints via N-able, and use PowerShell for tenant audits and diagnostics.',
     techStack: ['Microsoft 365', 'Entra ID', 'Intune', 'PowerShell', 'ConnectWise', 'N-able'],
   },
   {
